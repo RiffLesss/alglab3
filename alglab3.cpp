@@ -3,6 +3,7 @@
 #include <sstream>
 #include "alglab1.h"
 #include "stack.h"
+using namespace std;
 
 
 class PostfixCalculator {
@@ -80,7 +81,6 @@ private:
 
 };
 
-// Функция, которая определяет приоритет оператора
 int priority(char op) {
     if (op == '+' || op == '-') {
         return 1;
@@ -93,45 +93,44 @@ int priority(char op) {
     }
 }
 
-// Функция, которая переводит инфиксное выражение в постфиксное
 string infixToPostfix(string expression) {
-    stack<char> s;
+    Stack s;
     string postfix = "";
 
     for (int i = 0; i < expression.length(); i++) {
         char c = expression[i];
 
-        // Если символ является операндом, добавляем его в постфиксную строку
         if (isalnum(c)) {
             postfix += c;
+            postfix += " ";
         }
-        // Если символ является открывающей скобкой, помещаем его в стек
+
         else if (c == '(') {
             s.push(c);
         }
-        // Если символ является закрывающей скобкой, выталкиваем все символы из стека 
-        // и добавляем их в постфиксную строку, пока не достигнем открывающей скобки
+
         else if (c == ')') {
             while (!s.empty() && s.top() != '(') {
                 postfix += s.top();
+                postfix += " ";
                 s.pop();
             }
             s.pop();
         }
-        // Если символ является оператором, выталкиваем из стека все операторы с 
-        // более высоким приоритетом и добавляем их в постфиксную строку
+
         else {
             while (!s.empty() && priority(c) <= priority(s.top())) {
                 postfix += s.top();
+                postfix += " ";
                 s.pop();
             }
             s.push(c);
         }
     }
 
-    // Выталкиваем оставшиеся элементы из стека и добавляем их в постфиксную строку
     while (!s.empty()) {
         postfix += s.top();
+        postfix += " ";
         s.pop();
     }
 
@@ -148,7 +147,7 @@ int main() {
             break;
         }
         string postfix = infixToPostfix(expression);
-        std::cout << calculator.calculate(expression) << std::endl;
+        std::cout << calculator.calculate(postfix) << std::endl;
     }
     return 0;
 }
